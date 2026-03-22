@@ -1,10 +1,6 @@
+import { useState } from 'react'
 import type { Place } from '../types/places.types'
-
-function formatSpaces(place: Place): string {
-  const count = place.spaces ?? place.units ?? place.buildings ?? 0
-  if (count <= 0) return '—'
-  return count === 1 ? '1 Unit' : `${count} Units`
-}
+import { LocationModal } from './LocationModal'
 
 function getStatusDisplay(place: Place): {
   label: string
@@ -24,6 +20,7 @@ interface PlaceCardProps {
 }
 
 export function PlaceCard({ place }: PlaceCardProps) {
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false)
   const status = getStatusDisplay(place)
   const imageUrl = place.imageUrl ?? place.image
 
@@ -93,25 +90,33 @@ export function PlaceCard({ place }: PlaceCardProps) {
             />
           </svg>
           <span>
-            Location: {place?.latitude}, {place?.longitude} : Address:{' '}
-            <b>Mockup Address</b>
+            {place?.latitude && place?.longitude ? (
+              <button
+                type="button"
+                onClick={() => setIsLocationModalOpen(true)}
+                className="cursor-pointer inline-flex items-center gap-1 text-slate-700 hover:text-slate-900 hover:underline text-left"
+              >
+                Show Location
+              </button>
+            ) : (
+              <></>
+            )}
+            : Address: <b>Mockup Address</b>
           </span>
         </div>
         <div className="grid grid-cols-2 gap-3 text-sm mb-4">
-          {/* <div>
+          <div>
             <div className="text-slate-500 uppercase tracking-wide text-xs font-medium mb-0.5">
-              Total Area
+              Capacidad
             </div>
-            <div className="text-slate-900 font-medium">
-              {formatArea(place)}
-            </div>
-          </div> */}
+            <div className="text-slate-900 font-medium">2000%</div>
+          </div>
           <div>
             <div className="text-slate-500 uppercase tracking-wide text-xs font-medium mb-0.5">
               Spaces
             </div>
             <div className="text-slate-900 font-medium">
-              {formatSpaces(place)}
+              {place?.spaces?.map((s) => s?.name).filter(Boolean).join(', ') || '—'}
             </div>
           </div>
         </div>
@@ -122,6 +127,15 @@ export function PlaceCard({ place }: PlaceCardProps) {
           View Spaces →
         </button>
       </div>
+      {place?.latitude != null && place?.longitude != null && (
+        <LocationModal
+          isOpen={isLocationModalOpen}
+          onClose={() => setIsLocationModalOpen(false)}
+          latitude={place.latitude}
+          longitude={place.longitude}
+          placeName={place.name}
+        />
+      )}
     </article>
   )
 }

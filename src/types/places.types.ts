@@ -1,16 +1,11 @@
+import type { Space } from './space.types'
+
 export interface Place {
   id: string
   name: string
-  address: string
-  totalArea?: number
-  totalAreaSqFt?: number
-  spaces?: number
-  units?: number
-  buildings?: number
-  status?: 'available' | 'maintenance' | string
-  capacityPercentage?: number
-  imageUrl?: string
-  image?: string
+  latitude?: number
+  longitude?: number
+  spaces?: Space[]
 }
 
 export interface PlacesResponse {
