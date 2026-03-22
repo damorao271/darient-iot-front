@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { ApiError } from './errors'
+import type { ApiErrorEnvelope } from '../types/api.types'
 
 const getBaseUrl = () => {
   const url = import.meta.env.VITE_API_URL
@@ -29,6 +31,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    const envelope = error.response?.data as ApiErrorEnvelope | undefined
+    if (envelope?.success === false) {
+      console.error('[API Error]', envelope.message)
+      return Promise.reject(new ApiError(envelope, error))
+    }
     const message = error.response?.data?.message ?? error.message
     console.error('[API Error]', message)
     return Promise.reject(error)
