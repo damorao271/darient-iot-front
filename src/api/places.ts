@@ -1,5 +1,5 @@
-import { api } from './api'
-import type { Place, PlacesResponse } from '../types/places.types'
+import { client } from './client'
+import type { Place } from '../types/places.types'
 
 export interface FetchPlacesParams {
   page?: number
@@ -7,24 +7,13 @@ export interface FetchPlacesParams {
 }
 
 export async function fetchPlaces(
-  params: FetchPlacesParams = {}
+  params: FetchPlacesParams = {},
 ): Promise<{ places: Place[]; total: number }> {
   const { page = 1, limit = 12 } = params
-  const { data } = await api.get<Place[] | PlacesResponse>('/places', {
+  const places = await client.get<Place[]>('/places', {
     params: { page, limit },
   })
-
-  let places: Place[] = []
-  let total = 0
-
-  if (Array.isArray(data)) {
-    places = data
-    total = data.length
-  } else if (data && typeof data === 'object') {
-    const res = data as PlacesResponse
-    places = res.data ?? res.places ?? []
-    total = res.total ?? places.length
-  }
-
-  return { places, total }
+  const list = Array.isArray(places) ? places : []
+  const total = list.length < limit ? (page - 1) * limit + list.length : page * limit
+  return { places: list, total }
 }

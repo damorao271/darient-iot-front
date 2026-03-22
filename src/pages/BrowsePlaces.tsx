@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { usePlaces } from '../hooks/usePlaces'
+import { ApiErrorAlert } from '../components/ApiErrorAlert'
 import { PlaceCard } from '../components/PlaceCard'
 import { RegisterPlaceCard } from '../components/RegisterPlaceCard'
 
 export function BrowsePlaces() {
   const [page, setPage] = useState(1)
   const limit = 12
-  const { data, isLoading, error } = usePlaces(page, limit)
+  const { data, isLoading, error, refetch } = usePlaces(page, limit)
 
   const places = data?.places ?? []
   const total = data?.total ?? 0
@@ -121,12 +122,7 @@ export function BrowsePlaces() {
           </div>
 
           {/* Grid */}
-          {error && (
-            <div className="mb-6 p-4 rounded-lg bg-red-50 text-red-700 text-sm">
-              Failed to load places. Make sure the API is running at{' '}
-              <code className="bg-red-100 px-1 rounded">http://localhost:3000</code>.
-            </div>
-          )}
+          {error && <ApiErrorAlert error={error} onRetry={refetch} />}
 
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
