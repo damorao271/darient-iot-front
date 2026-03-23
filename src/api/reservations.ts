@@ -22,3 +22,7 @@ export async function fetchReservations(
   }>('/reservations', { params })
   return data.data
 }
+
+export async function cancelReservation(reservationId: string): Promise<void> {
+  await api.delete(`/reservations/${reservationId}`)
+}

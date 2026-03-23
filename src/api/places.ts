@@ -1,10 +1,5 @@
 import { client } from './client'
-import type { Place } from '../types/places.types'
-
-export interface FetchPlacesParams {
-  page?: number
-  limit?: number
-}
+import type { FetchPlacesParams, Place } from '../types/places.types'
 
 export async function fetchPlaces(
   params: FetchPlacesParams = {},

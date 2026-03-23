@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchPlaceSpaces } from '../api/spaces'
-import type { FetchPlaceSpacesParams } from '../api/spaces'
+import type { FetchPlaceSpacesParams } from '../types/spaces.types'
 import { queryKeys } from '../api/query-keys'
 
 export function usePlaceSpaces(

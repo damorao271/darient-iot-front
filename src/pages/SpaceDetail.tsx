@@ -3,18 +3,22 @@ import { Link, useParams } from 'react-router-dom'
 import { useSpace } from '../hooks/useSpace'
 import { useCreateReservation } from '../hooks/useCreateReservation'
 import { useReservations } from '../hooks/useReservations'
+import { useCancelReservation } from '../hooks/useCancelReservation'
 import { AppSidebar } from '../components/AppSidebar'
 import { AppHeader } from '../components/AppHeader'
 import { CreateReservationForm } from '../components/CreateReservationForm'
 import { ReservationsTable } from '../components/ReservationsTable'
 import { ReservationsTableFilters } from '../components/ReservationsTableFilters'
 import { ApiErrorAlert } from '../components/ApiErrorAlert'
+import { CancelReservationConfirmModal } from '../components/CancelReservationConfirmModal'
+import { LocationModal } from '../components/LocationModal'
 import { useEffect, useRef } from 'react'
 import {
   formatDateTimeRange,
   getDurationHours,
   getCurrentMonthDateRange,
 } from '../utils/date'
+import type { ReservationListItem } from '../types/reservation.types'
 import { isValidEmail } from '../utils/string'
 import { showErrorToast } from '../utils/toast'
 
@@ -24,7 +28,7 @@ const DEFAULT_FILTERS = () => ({
   searchEmail: '',
   fromDate: getCurrentMonthDateRange().fromDate,
   toDate: getCurrentMonthDateRange().toDate,
-  sortOrder: 'desc' as SortOrderOption,
+  sortOrder: 'asc' as SortOrderOption,
   pageSize: 10,
 })
 
@@ -78,16 +82,16 @@ export function SpaceDetail() {
     error: reservationsError,
     refetch: refetchReservations,
   } = useReservations({
-      spaceId: spaceId ?? '',
-      page: reservationsPage,
-      pageSize: appliedFilters.pageSize,
-      sortBy: 'startAt',
-      sortOrder: appliedFilters.sortOrder,
-      fromDate: appliedFilters.fromDate,
-      toDate: appliedFilters.toDate,
-      clientEmail: clientEmailForApi,
-      searchTrigger,
-    })
+    spaceId: spaceId ?? '',
+    page: reservationsPage,
+    pageSize: appliedFilters.pageSize,
+    sortBy: 'startAt',
+    sortOrder: appliedFilters.sortOrder,
+    fromDate: appliedFilters.fromDate,
+    toDate: appliedFilters.toDate,
+    clientEmail: clientEmailForApi,
+    searchTrigger,
+  })
 
   const lastSuccessDataRef = useRef<typeof reservationsData>(reservationsData)
   useEffect(() => {
@@ -106,6 +110,18 @@ export function SpaceDetail() {
   const place = space?.place
   const reservations = space?.reservations ?? []
   const timezone = place?.timezone
+  const [reservationToCancel, setReservationToCancel] =
+    useState<ReservationListItem | null>(null)
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false)
+  const cancelReservationMutation = useCancelReservation({
+    showErrorToast: false,
+  })
+
+  const handleConfirmCancelReservation = (id: string) => {
+    cancelReservationMutation.mutate(id, {
+      onSuccess: () => setReservationToCancel(null),
+    })
+  }
 
   if (error) {
     return (
@@ -160,6 +176,79 @@ export function SpaceDetail() {
                 <span className="text-slate-400">/</span>
                 <span className="text-slate-700">{space.reference}</span>
               </nav>
+
+              {/* Place info: name, timezone, location */}
+              {place && (
+                <div className="mb-6 p-4 rounded-xl border border-slate-200 bg-white shadow-sm">
+                  <div className="flex flex-wrap items-center gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-slate-400 shrink-0"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                        />
+                      </svg>
+                      <span className="font-medium text-slate-900">
+                        {place.name}
+                      </span>
+                    </div>
+                    {place.timezone && (
+                      <div className="flex items-center gap-2 text-slate-600">
+                        <svg
+                          className="w-4 h-4 text-slate-400 shrink-0"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <span>{place.timezone}</span>
+                      </div>
+                    )}
+                    {place.latitude != null &&
+                      place.longitude != null && (
+                        <button
+                          type="button"
+                          onClick={() => setIsLocationModalOpen(true)}
+                          className="inline-flex items-center gap-1.5 text-violet-600 hover:text-violet-700 font-medium"
+                        >
+                          <svg
+                            className="w-4 h-4 shrink-0"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                          Show Location
+                        </button>
+                      )}
+                  </div>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Left: Space info + bookings */}
@@ -374,6 +463,12 @@ export function SpaceDetail() {
                       meta={displayData.meta}
                       timezone={place?.timezone}
                       onPageChange={setReservationsPage}
+                      onCancelReservation={(res) => setReservationToCancel(res)}
+                      cancelReservationId={
+                        cancelReservationMutation.isPending
+                          ? reservationToCancel?.id
+                          : undefined
+                      }
                     />
                   </div>
                 ) : null}
@@ -382,6 +477,26 @@ export function SpaceDetail() {
           ) : null}
         </div>
       </main>
+
+      <CancelReservationConfirmModal
+        isOpen={!!reservationToCancel}
+        onClose={() => setReservationToCancel(null)}
+        onConfirm={handleConfirmCancelReservation}
+        reservation={reservationToCancel}
+        timezone={place?.timezone}
+        isDeleting={cancelReservationMutation.isPending}
+        error={cancelReservationMutation.error}
+      />
+
+      {place?.latitude != null && place?.longitude != null && (
+        <LocationModal
+          isOpen={isLocationModalOpen}
+          onClose={() => setIsLocationModalOpen(false)}
+          latitude={place.latitude}
+          longitude={place.longitude}
+          placeName={place.name}
+        />
+      )}
     </div>
   )
 }

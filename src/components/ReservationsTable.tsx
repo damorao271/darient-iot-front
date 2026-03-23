@@ -7,6 +7,8 @@ interface ReservationsTableProps {
   meta: { page: number; pageSize: number; total: number; totalPages: number }
   timezone?: string
   onPageChange?: (page: number) => void
+  onCancelReservation?: (reservation: ReservationListItem) => void
+  cancelReservationId?: string
 }
 
 export function ReservationsTable({
@@ -14,6 +16,8 @@ export function ReservationsTable({
   meta,
   timezone,
   onPageChange,
+  onCancelReservation,
+  cancelReservationId,
 }: ReservationsTableProps) {
   const { page, pageSize, total, totalPages } = meta
   const start = (page - 1) * pageSize + 1
@@ -50,10 +54,17 @@ export function ReservationsTable({
                 </td>
               </tr>
             ) : (
-              items.map((res) => (
+              items.map((res) => {
+                const isPast =
+                  new Date(res.endAt).getTime() < Date.now()
+                return (
                 <tr
                   key={res.id}
-                  className="border-t border-slate-100 hover:bg-slate-50/50 transition-colors"
+                  className={`border-t border-slate-100 transition-colors ${
+                    isPast
+                      ? 'bg-slate-200 hover:bg-slate-300/80'
+                      : 'hover:bg-slate-50/50'
+                  }`}
                 >
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
@@ -98,7 +109,9 @@ export function ReservationsTable({
                       </button>
                       <button
                         type="button"
-                        className="p-2 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+                        onClick={() => onCancelReservation?.(res)}
+                        disabled={cancelReservationId === res.id}
+                        className="p-2 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         aria-label="Cancel reservation"
                       >
                         <svg
@@ -118,7 +131,8 @@ export function ReservationsTable({
                     </div>
                   </td>
                 </tr>
-              ))
+              )
+              })
             )}
           </tbody>
         </table>
