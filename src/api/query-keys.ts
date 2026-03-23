@@ -3,6 +3,9 @@ export const queryKeys = {
     all: ['places'] as const,
     list: (page?: number, limit?: number) =>
       [...queryKeys.places.all, 'list', page, limit] as const,
+    /** Base key for spaces - use for invalidation to match all pagination/sort variants */
+    spacesAll: (placeId: string) =>
+      [...queryKeys.places.all, 'spaces', placeId] as const,
     spaces: (
       placeId: string,
       page?: number,

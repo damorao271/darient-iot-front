@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { usePlaceSpaces } from '../hooks/usePlaceSpaces'
 import { useCreateSpace } from '../hooks/useCreateSpace'
+import { useUpdateSpace } from '../hooks/useUpdateSpace'
 import type { CreateSpaceFormValues } from '../schemas/space.schema'
-import type { SpaceSortBy, SortOrder } from '../types/spaces.types'
+import type { Space, SpaceSortBy, SortOrder } from '../types/spaces.types'
 import { SPACE_PAGE_SIZE_OPTIONS, SPACE_SORT_BY_OPTIONS } from '../constants/spaces'
 import { SpaceCard } from '../components/SpaceCard'
 import { AppSidebar } from '../components/AppSidebar'
-import { CreateSpaceModal } from '../components/CreateSpaceModal'
+import { SpaceFormModal } from '../components/SpaceFormModal'
 
 export function PlaceSpaces() {
   const { placeId } = useParams<{ placeId: string }>()
@@ -23,7 +24,9 @@ export function PlaceSpaces() {
     sortOrder,
   })
   const createSpace = useCreateSpace(placeId ?? '')
+  const updateSpace = useUpdateSpace(placeId ?? '')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [spaceToEdit, setSpaceToEdit] = useState<Space | null>(null)
 
   const place = data?.place
   const spaces = data?.spaces ?? []
@@ -32,10 +35,20 @@ export function PlaceSpaces() {
   const start = total > 0 ? (page - 1) * pageSize + 1 : 0
   const end = Math.min(page * pageSize, total)
 
-  function handleCreateSpace(values: CreateSpaceFormValues) {
-    createSpace.mutate(values, {
-      onSuccess: () => setIsCreateModalOpen(false),
-    })
+  function handleSpaceFormSubmit(values: CreateSpaceFormValues) {
+    if (spaceToEdit) {
+      updateSpace.mutate(
+        { spaceId: spaceToEdit.id, values },
+        { onSuccess: closeSpaceForm },
+      )
+    } else {
+      createSpace.mutate(values, { onSuccess: closeSpaceForm })
+    }
+  }
+
+  function closeSpaceForm() {
+    setIsCreateModalOpen(false)
+    setSpaceToEdit(null)
   }
 
   return (
@@ -221,6 +234,7 @@ export function PlaceSpaces() {
                   key={space.id}
                   space={space}
                   timezone={place?.timezone}
+                  onEdit={setSpaceToEdit}
                 />
               ))}
             </div>
@@ -297,11 +311,13 @@ export function PlaceSpaces() {
         </div>
       </main>
 
-      <CreateSpaceModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSubmit={handleCreateSpace}
-        isSubmitting={createSpace.isPending}
+      <SpaceFormModal
+        isOpen={isCreateModalOpen || !!spaceToEdit}
+        onClose={closeSpaceForm}
+        onSubmit={handleSpaceFormSubmit}
+        mode={spaceToEdit ? 'edit' : 'create'}
+        space={spaceToEdit}
+        isSubmitting={createSpace.isPending || updateSpace.isPending}
       />
     </div>
   )

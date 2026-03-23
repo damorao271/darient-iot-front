@@ -1,5 +1,10 @@
 import { api } from './api'
-import type { PlaceSpacesResponse, Space, SpaceSortBy, SortOrder } from '../types/spaces.types'
+import type {
+  PlaceSpacesResponse,
+  Space,
+  SpaceSortBy,
+  SortOrder,
+} from '../types/spaces.types'
 import type { CreateSpaceFormValues } from '../schemas/space.schema'
 
 export interface CreateSpaceBody extends CreateSpaceFormValues {
@@ -39,5 +44,15 @@ export async function fetchPlaceSpaces(
 
 export async function createSpace(body: CreateSpaceBody): Promise<Space> {
   const { data } = await api.post<{ data: Space }>('/spaces', body)
+  return data.data
+}
+
+export interface UpdateSpaceBody extends CreateSpaceFormValues {}
+
+export async function updateSpace(
+  spaceId: string,
+  body: UpdateSpaceBody,
+): Promise<Space> {
+  const { data } = await api.patch<{ data: Space }>(`/spaces/${spaceId}`, body)
   return data.data
 }
