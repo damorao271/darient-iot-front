@@ -7,22 +7,31 @@ import {
   type CreateSpaceFormInput,
   type CreateSpaceFormValues,
 } from '../schemas/space.schema'
+import type { Space } from '../types/spaces.types'
 import { Input } from './ui/Input'
 import { Textarea } from './ui/Textarea'
 
-interface CreateSpaceModalProps {
+export type SpaceFormMode = 'create' | 'edit'
+
+interface SpaceFormModalProps {
   isOpen: boolean
   onClose: () => void
   onSubmit: (values: CreateSpaceFormValues) => void
+  mode: SpaceFormMode
+  space?: Space | null
   isSubmitting?: boolean
 }
 
-export function CreateSpaceModal({
+export function SpaceFormModal({
   isOpen,
   onClose,
   onSubmit,
+  mode,
+  space,
   isSubmitting = false,
-}: CreateSpaceModalProps) {
+}: SpaceFormModalProps) {
+  const isEdit = mode === 'edit'
+
   const {
     register,
     handleSubmit,
@@ -37,6 +46,20 @@ export function CreateSpaceModal({
       reset()
       return
     }
+    if (isEdit && space) {
+      reset({
+        name: space.name,
+        reference: space.reference ?? '',
+        capacity: space.capacity,
+        description: space.description ?? '',
+      })
+    } else {
+      reset()
+    }
+  }, [isOpen, isEdit, space, reset])
+
+  useEffect(() => {
+    if (!isOpen) return
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape' && !isSubmitting) onClose()
@@ -44,32 +67,38 @@ export function CreateSpaceModal({
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, isSubmitting, onClose, reset])
+  }, [isOpen, isSubmitting, onClose])
 
   if (!isOpen) return null
+
+  const title = isEdit ? 'Edit Space' : 'Create New Space'
+  const submitLabel = isSubmitting
+    ? isEdit
+      ? 'Saving...'
+      : 'Creating...'
+    : isEdit
+      ? 'Save Changes'
+      : 'Create Space'
 
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="create-space-title"
+      aria-labelledby="space-form-title"
     >
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/30 backdrop-blur-sm"
         onClick={isSubmitting ? undefined : onClose}
       />
 
-      {/* Modal */}
       <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md">
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
           <h2
-            id="create-space-title"
+            id="space-form-title"
             className="text-lg font-semibold text-slate-900"
           >
-            Create New Space
+            {title}
           </h2>
           <button
             type="button"
@@ -94,7 +123,6 @@ export function CreateSpaceModal({
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="px-6 py-5 flex flex-col gap-4">
             <Input
@@ -129,7 +157,6 @@ export function CreateSpaceModal({
             />
           </div>
 
-          {/* Footer */}
           <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200">
             <button
               type="button"
@@ -165,7 +192,7 @@ export function CreateSpaceModal({
                   />
                 </svg>
               )}
-              {isSubmitting ? 'Creating...' : 'Create Space'}
+              {submitLabel}
             </button>
           </div>
         </form>

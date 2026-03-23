@@ -4,9 +4,10 @@ import { formatDateTimeRange } from '../utils/date'
 interface SpaceCardProps {
   space: Space
   timezone?: string
+  onEdit?: (space: Space) => void
 }
 
-export function SpaceCard({ space, timezone }: SpaceCardProps) {
+export function SpaceCard({ space, timezone, onEdit }: SpaceCardProps) {
   const hasReservations = space.reservations?.length > 0
 
   return (
@@ -29,9 +30,23 @@ export function SpaceCard({ space, timezone }: SpaceCardProps) {
             </svg>
           </div>
           <div className="min-w-0 flex-1">
-            <span className="inline-block px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600 text-xs font-medium mb-1.5">
-              {space.reference}
-            </span>
+            <div className="flex items-start justify-between gap-2">
+              <span className="inline-block px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600 text-xs font-medium mb-1.5">
+                {space.reference}
+              </span>
+              {onEdit && (
+                <button
+                  type="button"
+                  onClick={() => onEdit(space)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 transition-colors shrink-0"
+                  aria-label="Edit space"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+              )}
+            </div>
             <h3 className="text-lg font-semibold text-slate-900">
               {space.name}
             </h3>
