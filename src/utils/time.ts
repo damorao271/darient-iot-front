@@ -46,3 +46,20 @@ export function getEndTimeOptions(): { value: string; label: string }[] {
 
 export const START_TIME_OPTIONS = getStartTimeOptions()
 export const END_TIME_OPTIONS = getEndTimeOptions()
+
+/**
+ * Extracts HH:mm (24h) from an ISO datetime string, in the given IANA timezone.
+ * Handles the edge case where Intl returns "24" for midnight.
+ */
+export function extractTimeHHmm(isoString: string, timezone?: string): string {
+  const date = new Date(isoString)
+  const parts = new Intl.DateTimeFormat('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    ...(timezone && { timeZone: timezone }),
+  }).formatToParts(date)
+  const hour = parts.find((p) => p.type === 'hour')?.value ?? '00'
+  const minute = parts.find((p) => p.type === 'minute')?.value ?? '00'
+  return `${(hour === '24' ? '00' : hour).padStart(2, '0')}:${minute.padStart(2, '0')}`
+}

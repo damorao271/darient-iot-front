@@ -7,6 +7,7 @@ interface ReservationsTableProps {
   meta: { page: number; pageSize: number; total: number; totalPages: number }
   timezone?: string
   onPageChange?: (page: number) => void
+  onEditReservation?: (reservation: ReservationListItem) => void
   onCancelReservation?: (reservation: ReservationListItem) => void
   cancelReservationId?: string
 }
@@ -16,6 +17,7 @@ export function ReservationsTable({
   meta,
   timezone,
   onPageChange,
+  onEditReservation,
   onCancelReservation,
   cancelReservationId,
 }: ReservationsTableProps) {
@@ -55,83 +57,91 @@ export function ReservationsTable({
               </tr>
             ) : (
               items.map((res) => {
-                const isPast =
-                  new Date(res.endAt).getTime() < Date.now()
+                const isPast = new Date(res.endAt).getTime() < Date.now()
                 return (
-                <tr
-                  key={res.id}
-                  className={`border-t border-slate-100 transition-colors ${
-                    isPast
-                      ? 'bg-slate-200 hover:bg-slate-300/80'
-                      : 'hover:bg-slate-50/50'
-                  }`}
-                >
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-violet-100 flex items-center justify-center text-violet-700 font-semibold text-sm shrink-0">
-                        {getInitials(res.clientEmail)}
+                  <tr
+                    key={res.id}
+                    className={`border-t border-slate-100 transition-colors ${
+                      isPast
+                        ? 'bg-slate-200 hover:bg-slate-300/80'
+                        : 'hover:bg-slate-50/50'
+                    }`}
+                  >
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-violet-100 flex items-center justify-center text-violet-700 font-semibold text-sm shrink-0">
+                          {getInitials(res.clientEmail)}
+                        </div>
+                        <span className="font-medium text-slate-900">
+                          {res.clientEmail}
+                        </span>
                       </div>
-                      <span className="font-medium text-slate-900">
-                        {res.clientEmail}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-5 py-4 text-slate-700">
-                    {formatDateOnly(res.reservationDate, res.timezone)}
-                  </td>
-                  <td className="px-5 py-4 text-slate-600 text-sm">
-                    {formatTimeRange(
-                      res.startAt,
-                      res.endAt,
-                      res.timezone || timezone,
-                    )}
-                  </td>
-                  <td className="px-5 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        type="button"
-                        className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
-                        aria-label="Edit reservation"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                          />
-                        </svg>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onCancelReservation?.(res)}
-                        disabled={cancelReservationId === res.id}
-                        className="p-2 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        aria-label="Cancel reservation"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              )
+                    </td>
+                    <td className="px-5 py-4 text-slate-700">
+                      {formatDateOnly(res.reservationDate, res.timezone)}
+                    </td>
+                    <td className="px-5 py-4 text-slate-600 text-sm">
+                      {formatTimeRange(
+                        res.startAt,
+                        res.endAt,
+                        res.timezone || timezone,
+                      )}
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {isPast ? (
+                          <span className="w-8 h-8 inline-block" />
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => onEditReservation?.(res)}
+                            className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                            aria-label="Edit reservation"
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                              />
+                            </svg>
+                          </button>
+                        )}
+                        {isPast ? (
+                          <span className="w-8 h-8 inline-block" />
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => onCancelReservation?.(res)}
+                            disabled={cancelReservationId === res.id}
+                            className="p-2 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            aria-label="Cancel reservation"
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                )
               })
             )}
           </tbody>

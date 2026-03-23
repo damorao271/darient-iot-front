@@ -6,6 +6,13 @@ export interface CreateReservationBody {
   endTime: string
 }
 
+export interface UpdateReservationBody {
+  clientEmail?: string
+  reservationDate?: string
+  startTime?: string
+  endTime?: string
+}
+
 export interface Reservation {
   id: string
 }

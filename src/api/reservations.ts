@@ -1,6 +1,7 @@
 import { api } from './api'
 import type {
   CreateReservationBody,
+  UpdateReservationBody,
   Reservation,
   ReservationsListResponse,
   FetchReservationsParams,
@@ -20,6 +21,17 @@ export async function fetchReservations(
     success: boolean
     data: ReservationsListResponse
   }>('/reservations', { params })
+  return data.data
+}
+
+export async function updateReservation(
+  reservationId: string,
+  body: UpdateReservationBody,
+): Promise<Reservation> {
+  const { data } = await api.patch<{ data: Reservation }>(
+    `/reservations/${reservationId}`,
+    body,
+  )
   return data.data
 }
 
