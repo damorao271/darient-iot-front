@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ApiError } from '../api/errors'
 import { getUserFriendlyMessage } from '../utils/error-messages'
+import { formatValidationDetails } from '../utils/error-messages'
 
 export interface ApiErrorAlertProps {
   error: unknown
@@ -14,7 +15,9 @@ export function ApiErrorAlert({ error, onRetry, variant = 'inline' }: ApiErrorAl
   const message = getUserFriendlyMessage(error)
 
   const apiError = error instanceof ApiError ? error : null
-  const hasDetails = apiError && (apiError.backendError || apiError.path)
+  const hasValidationDetails = apiError?.details && apiError.details.length > 0
+  const hasOtherDetails = apiError && (apiError.backendError || apiError.path)
+  const hasDetails = hasValidationDetails || hasOtherDetails
 
   const baseClasses =
     variant === 'banner'
@@ -47,12 +50,17 @@ export function ApiErrorAlert({ error, onRetry, variant = 'inline' }: ApiErrorAl
           <p className="text-sm font-medium">{message}</p>
           {hasDetails && (
             <>
-              {showDetails ? (
+              {hasValidationDetails && (
+                <p className="mt-2 text-xs text-red-600/90 whitespace-pre-line">
+                  {formatValidationDetails(apiError!.details!)}
+                </p>
+              )}
+              {showDetails && hasOtherDetails ? (
                 <div className="mt-2 text-xs text-red-600/90 space-y-0.5">
                   {apiError?.backendError && <p>Error: {apiError.backendError}</p>}
                   {apiError?.path && <p>Path: {apiError.path}</p>}
                 </div>
-              ) : (
+              ) : hasOtherDetails ? (
                 <button
                   type="button"
                   onClick={() => setShowDetails(true)}
@@ -60,7 +68,7 @@ export function ApiErrorAlert({ error, onRetry, variant = 'inline' }: ApiErrorAl
                 >
                   Show details
                 </button>
-              )}
+              ) : null}
             </>
           )}
         </div>

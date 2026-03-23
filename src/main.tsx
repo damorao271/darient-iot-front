@@ -9,8 +9,8 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (failureCount, error) => {
-        // Don't retry 404 - resource doesn't exist
-        if (error instanceof ApiError && error.statusCode === 404) return false
+        // Don't retry 4xx client errors - same result (404, 400 validation, etc.)
+        if (error instanceof ApiError && error.isClientError()) return false
         return failureCount < 2
       },
       refetchOnWindowFocus: false,

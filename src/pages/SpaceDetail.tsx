@@ -1,14 +1,107 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useSpace } from '../hooks/useSpace'
 import { useCreateReservation } from '../hooks/useCreateReservation'
+import { useReservations } from '../hooks/useReservations'
 import { AppSidebar } from '../components/AppSidebar'
 import { AppHeader } from '../components/AppHeader'
 import { CreateReservationForm } from '../components/CreateReservationForm'
-import { formatDateTimeRange, getDurationHours } from '../utils/date'
+import { ReservationsTable } from '../components/ReservationsTable'
+import { ReservationsTableFilters } from '../components/ReservationsTableFilters'
+import { ApiErrorAlert } from '../components/ApiErrorAlert'
+import { useEffect, useRef } from 'react'
+import {
+  formatDateTimeRange,
+  getDurationHours,
+  getCurrentMonthDateRange,
+} from '../utils/date'
+import { isValidEmail } from '../utils/string'
+import { showErrorToast } from '../utils/toast'
+
+type SortOrderOption = 'asc' | 'desc'
+
+const DEFAULT_FILTERS = () => ({
+  searchEmail: '',
+  fromDate: getCurrentMonthDateRange().fromDate,
+  toDate: getCurrentMonthDateRange().toDate,
+  sortOrder: 'desc' as SortOrderOption,
+  pageSize: 10,
+})
 
 export function SpaceDetail() {
   const { spaceId } = useParams<{ spaceId: string }>()
+  const [formFilters, setFormFilters] = useState(DEFAULT_FILTERS)
+  const [appliedFilters, setAppliedFilters] = useState(DEFAULT_FILTERS)
+  const [reservationsPage, setReservationsPage] = useState(1)
+  const [searchTrigger, setSearchTrigger] = useState(0)
+  const [searchEmailError, setSearchEmailError] = useState<string | undefined>()
+  const [dateRangeError, setDateRangeError] = useState<string | undefined>()
+
+  const handleSearch = () => {
+    const trimmed = formFilters.searchEmail.trim()
+    if (trimmed && !isValidEmail(formFilters.searchEmail)) {
+      setSearchEmailError('Enter a valid email address')
+      return
+    }
+    setSearchEmailError(undefined)
+
+    if (formFilters.fromDate > formFilters.toDate) {
+      setDateRangeError('From date must be before or equal to to date')
+      return
+    }
+    setDateRangeError(undefined)
+
+    setAppliedFilters({ ...formFilters })
+    setReservationsPage(1)
+    setSearchTrigger((t) => t + 1)
+  }
+
+  const handleClearFilters = () => {
+    const defaults = DEFAULT_FILTERS()
+    setFormFilters(defaults)
+    setAppliedFilters(defaults)
+    setReservationsPage(1)
+    setSearchEmailError(undefined)
+    setDateRangeError(undefined)
+  }
+
+  const clientEmailForApi = appliedFilters.searchEmail.trim()
+    ? isValidEmail(appliedFilters.searchEmail)
+      ? appliedFilters.searchEmail.trim()
+      : undefined
+    : undefined
+
   const { data: space, isLoading, error } = useSpace(spaceId)
+  const {
+    data: reservationsData,
+    isLoading: reservationsLoading,
+    error: reservationsError,
+    refetch: refetchReservations,
+  } = useReservations({
+      spaceId: spaceId ?? '',
+      page: reservationsPage,
+      pageSize: appliedFilters.pageSize,
+      sortBy: 'startAt',
+      sortOrder: appliedFilters.sortOrder,
+      fromDate: appliedFilters.fromDate,
+      toDate: appliedFilters.toDate,
+      clientEmail: clientEmailForApi,
+      searchTrigger,
+    })
+
+  const lastSuccessDataRef = useRef<typeof reservationsData>(reservationsData)
+  useEffect(() => {
+    if (reservationsData) lastSuccessDataRef.current = reservationsData
+  }, [reservationsData])
+
+  const displayData =
+    reservationsData ??
+    (reservationsError ? lastSuccessDataRef.current : undefined)
+
+  useEffect(() => {
+    if (reservationsError) showErrorToast(reservationsError)
+  }, [reservationsError])
+
   const createReservation = useCreateReservation(spaceId ?? '')
   const place = space?.place
   const reservations = space?.reservations ?? []
@@ -219,6 +312,71 @@ export function SpaceDetail() {
                     isSubmitting={createReservation.isPending}
                   />
                 </div>
+              </div>
+
+              {/* Reservations Table - Full width below both columns */}
+              <div className="mt-8">
+                <h2 className="font-semibold text-slate-900 mb-3">
+                  Reservations
+                </h2>
+                <ReservationsTableFilters
+                  searchEmail={formFilters.searchEmail}
+                  searchEmailError={searchEmailError}
+                  onSearchEmailChange={(v) =>
+                    setFormFilters((prev) => ({ ...prev, searchEmail: v }))
+                  }
+                  sortOrder={formFilters.sortOrder}
+                  pageSize={formFilters.pageSize}
+                  fromDate={formFilters.fromDate}
+                  toDate={formFilters.toDate}
+                  onSortOrderChange={(v) =>
+                    setFormFilters((prev) => ({
+                      ...prev,
+                      sortOrder: v as SortOrderOption,
+                    }))
+                  }
+                  onPageSizeChange={(v) =>
+                    setFormFilters((prev) => ({ ...prev, pageSize: v }))
+                  }
+                  onFromDateChange={(v) => {
+                    setDateRangeError(undefined)
+                    setFormFilters((prev) => ({ ...prev, fromDate: v }))
+                  }}
+                  onToDateChange={(v) => {
+                    setDateRangeError(undefined)
+                    setFormFilters((prev) => ({ ...prev, toDate: v }))
+                  }}
+                  dateRangeError={dateRangeError}
+                  onSearch={handleSearch}
+                  onClearFilters={handleClearFilters}
+                />
+                {!displayData && reservationsLoading ? (
+                  <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mt-3">
+                    <div className="animate-pulse p-8 space-y-4">
+                      <div className="h-4 bg-slate-200 rounded w-full" />
+                      <div className="h-4 bg-slate-200 rounded w-4/5" />
+                      <div className="h-4 bg-slate-200 rounded w-3/5" />
+                      <div className="h-4 bg-slate-200 rounded w-4/5" />
+                      <div className="h-4 bg-slate-200 rounded w-full" />
+                    </div>
+                  </div>
+                ) : reservationsError && !displayData ? (
+                  <div className="mt-3">
+                    <ApiErrorAlert
+                      error={reservationsError}
+                      onRetry={() => refetchReservations()}
+                    />
+                  </div>
+                ) : displayData ? (
+                  <div className="mt-3">
+                    <ReservationsTable
+                      items={displayData.items}
+                      meta={displayData.meta}
+                      timezone={place?.timezone}
+                      onPageChange={setReservationsPage}
+                    />
+                  </div>
+                ) : null}
               </div>
             </div>
           ) : null}
