@@ -60,3 +60,14 @@ export async function updateSpace(
 export async function deleteSpace(spaceId: string): Promise<void> {
   await api.delete(`/spaces/${spaceId}`)
 }
+
+export interface SpaceDetailResponse {
+  data: Space & { place?: { id: string; name: string; timezone?: string } }
+}
+
+export async function fetchSpaceById(spaceId: string): Promise<
+  Space & { place?: { id: string; name: string; timezone?: string } }
+> {
+  const { data } = await api.get<SpaceDetailResponse>(`/spaces/${spaceId}`)
+  return data.data
+}

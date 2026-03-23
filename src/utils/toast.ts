@@ -1,10 +1,20 @@
 import { toast } from 'sonner'
-import { getUserFriendlyMessage } from './error-messages'
+import { ApiError } from '../api/errors'
+import { formatValidationDetails, getUserFriendlyMessage } from './error-messages'
 
 /**
  * Show an error toast with a user-friendly message.
- * Use for mutations (create, update, delete) and background operations.
+ * For 400 responses with details[], displays them in the toast description (generic for all endpoints).
  */
 export function showErrorToast(error: unknown): void {
-  toast.error(getUserFriendlyMessage(error))
+  const message = getUserFriendlyMessage(error)
+
+  if (error instanceof ApiError && error.details?.length) {
+    toast.error(message, {
+      description: formatValidationDetails(error.details),
+      duration: 6000,
+    })
+  } else {
+    toast.error(message)
+  }
 }

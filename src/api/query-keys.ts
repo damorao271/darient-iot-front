@@ -1,4 +1,7 @@
 export const queryKeys = {
+  spaces: {
+    detail: (spaceId: string) => ['spaces', 'detail', spaceId] as const,
+  },
   places: {
     all: ['places'] as const,
     list: (page?: number, limit?: number) =>

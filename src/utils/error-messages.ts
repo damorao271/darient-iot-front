@@ -1,4 +1,25 @@
+import type { ValidationDetail } from '../types/api.types'
 import { ApiError } from '../api/errors'
+
+/** Converts camelCase/snake_case field names to readable labels (e.g. reservationDate → Booking date) */
+function formatFieldLabel(field: string): string {
+  const label = field
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/_/g, ' ')
+    .replace(/^\w/, (c) => c.toUpperCase())
+    .trim()
+  return label || field
+}
+
+/**
+ * Formats validation details for display.
+ * Generic for all endpoints – maps { field, issue }[] to user-friendly bullets.
+ */
+export function formatValidationDetails(details: ValidationDetail[]): string {
+  return details
+    .map((d) => `• ${formatFieldLabel(d.field)}: ${d.issue}`)
+    .join('\n')
+}
 
 /**
  * Maps API and network errors to user-friendly messages.

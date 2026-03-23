@@ -13,6 +13,12 @@ export interface ApiSuccessEnvelope<T> {
   path: string
 }
 
+/** Validation detail from 400 responses (generic for all endpoints) */
+export interface ValidationDetail {
+  field: string
+  issue: string
+}
+
 /** Backend error envelope - 4xx/5xx response body */
 export interface ApiErrorEnvelope {
   success: false
@@ -21,6 +27,7 @@ export interface ApiErrorEnvelope {
   error: string
   timestamp: string
   path: string
+  details?: ValidationDetail[]
 }
 
 /** Paginated payload shape (when data is paginated) */
