@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   createSpaceSchema,
+  EMPTY_SPACE_FORM_INPUT,
   type CreateSpaceFormInput,
   type CreateSpaceFormValues,
 } from '../schemas/space.schema'
@@ -39,11 +40,12 @@ export function SpaceFormModal({
     formState: { errors },
   } = useForm<CreateSpaceFormInput, unknown, CreateSpaceFormValues>({
     resolver: zodResolver(createSpaceSchema),
+    defaultValues: EMPTY_SPACE_FORM_INPUT,
   })
 
   useEffect(() => {
     if (!isOpen) {
-      reset()
+      reset(EMPTY_SPACE_FORM_INPUT)
       return
     }
     if (isEdit && space) {
@@ -54,7 +56,7 @@ export function SpaceFormModal({
         description: space.description ?? '',
       })
     } else {
-      reset()
+      reset(EMPTY_SPACE_FORM_INPUT)
     }
   }, [isOpen, isEdit, space, reset])
 

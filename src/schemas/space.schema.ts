@@ -26,3 +26,11 @@ export const createSpaceSchema = z.object({
 export type CreateSpaceFormInput = z.input<typeof createSpaceSchema>
 /** Output shape – used by the API call (after transforms) */
 export type CreateSpaceFormValues = z.output<typeof createSpaceSchema>
+
+/** Empty form defaults for create/edit modals */
+export const EMPTY_SPACE_FORM_INPUT: CreateSpaceFormInput = {
+  name: '',
+  reference: '',
+  capacity: 1,
+  description: '',
+}
