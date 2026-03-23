@@ -1,10 +1,14 @@
-import type { ApiErrorEnvelope } from '../types/api.types'
+import type {
+  ApiErrorEnvelope,
+  ValidationDetail,
+} from '../types/api.types'
 
 export class ApiError extends Error {
   readonly statusCode: number
   readonly backendError: string
   readonly path: string
   readonly timestamp: string
+  readonly details?: ValidationDetail[]
 
   readonly cause?: unknown
 
@@ -16,6 +20,7 @@ export class ApiError extends Error {
     this.backendError = envelope.error
     this.path = envelope.path
     this.timestamp = envelope.timestamp
+    this.details = envelope.details
     Object.setPrototypeOf(this, ApiError.prototype)
   }
 

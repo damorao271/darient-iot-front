@@ -37,3 +37,12 @@ export function formatDateTimeRange(
   }
   return `${start.toLocaleDateString(undefined, opts)} – ${end.toLocaleTimeString(undefined, timeOpts)}`
 }
+
+/**
+ * Returns the duration in hours between two ISO datetime strings, rounded to one decimal.
+ */
+export function getDurationHours(startAt: string, endAt: string): number {
+  const start = new Date(startAt).getTime()
+  const end = new Date(endAt).getTime()
+  return Math.round((end - start) / (1000 * 60 * 60) * 10) / 10
+}

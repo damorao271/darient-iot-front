@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { Space } from '../types/spaces.types'
 import { formatDateTimeRange } from '../utils/date'
 
@@ -9,14 +10,20 @@ interface SpaceCardProps {
   isDeleting?: boolean
 }
 
-export function SpaceCard({ space, timezone, onEdit, onDelete, isDeleting }: SpaceCardProps) {
+export function SpaceCard({
+  space,
+  timezone,
+  onEdit,
+  onDelete,
+  isDeleting,
+}: SpaceCardProps) {
   const hasReservations = space.reservations?.length > 0
   const canDelete = !hasReservations && onDelete
 
   return (
-    <article className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-      <div className="p-5">
-        <div className="flex items-start gap-3 mb-4">
+    <article className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
+      <div className="p-5 flex flex-col flex-1 min-h-0">
+        <div className="flex items-start gap-3 mb-4 shrink-0">
           <div className="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center shrink-0">
             <svg
               className="w-5 h-5 text-sky-600"
@@ -45,8 +52,18 @@ export function SpaceCard({ space, timezone, onEdit, onDelete, isDeleting }: Spa
                     className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 transition-colors"
                     aria-label="Edit space"
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
                     </svg>
                   </button>
                 )}
@@ -58,8 +75,18 @@ export function SpaceCard({ space, timezone, onEdit, onDelete, isDeleting }: Spa
                     className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label="Delete space"
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
                     </svg>
                   </button>
                 )}
@@ -74,7 +101,7 @@ export function SpaceCard({ space, timezone, onEdit, onDelete, isDeleting }: Spa
           </div>
         </div>
         {hasReservations ? (
-          <div className="rounded-lg bg-sky-50 border border-sky-100 p-3 space-y-2">
+          <div className="rounded-lg bg-sky-50 border border-sky-100 p-3 space-y-2 min-h-[10.5rem] shrink-0">
             <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">
               Upcoming Reservations
             </p>
@@ -111,23 +138,33 @@ export function SpaceCard({ space, timezone, onEdit, onDelete, isDeleting }: Spa
             )}
           </div>
         ) : (
-          <p className="text-sm text-slate-500 flex items-center gap-2">
-            <svg
-              className="w-4 h-4 text-slate-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            No reservations
-          </p>
+          <div className="min-h-[10.5rem] flex items-center justify-center shrink-0">
+            <p className="text-sm text-slate-500 flex items-center gap-2">
+              <svg
+                className="w-4 h-4 text-slate-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              No reservations
+            </p>
+          </div>
         )}
+        <div className="mt-auto pt-4 border-t border-slate-100 shrink-0">
+          <Link
+            to={`/spaces/${space.id}`}
+            className="block w-full py-2 px-4 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition-colors text-center"
+          >
+            See details
+          </Link>
+        </div>
       </div>
     </article>
   )
