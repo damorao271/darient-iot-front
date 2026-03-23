@@ -2,6 +2,32 @@ export const queryKeys = {
   spaces: {
     detail: (spaceId: string) => ['spaces', 'detail', spaceId] as const,
   },
+  reservations: {
+    list: (
+      spaceId?: string,
+      page?: number,
+      pageSize?: number,
+      sortBy?: string,
+      sortOrder?: string,
+      fromDate?: string,
+      toDate?: string,
+      clientEmail?: string,
+      searchTrigger?: number,
+    ) =>
+      [
+        'reservations',
+        'list',
+        spaceId,
+        page,
+        pageSize,
+        sortBy,
+        sortOrder,
+        fromDate,
+        toDate,
+        clientEmail,
+        searchTrigger,
+      ] as const,
+  },
   places: {
     all: ['places'] as const,
     list: (page?: number, limit?: number) =>

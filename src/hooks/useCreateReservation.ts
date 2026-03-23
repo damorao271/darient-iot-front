@@ -20,6 +20,9 @@ export function useCreateReservation(spaceId: string) {
       queryClient.invalidateQueries({
         queryKey: queryKeys.spaces.detail(spaceId),
       })
+      queryClient.invalidateQueries({
+        queryKey: ['reservations', 'list'],
+      })
     },
     onError: (error) => {
       showErrorToast(error)
