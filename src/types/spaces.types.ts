@@ -26,6 +26,16 @@ export interface PlaceSpacesPlace {
   timezone: string
   createdAt: string
   updatedAt: string
+  totalSpaces?: number
+}
+
+export interface PlaceSpacesMeta {
+  page: number
+  pageSize: number
+  total: number
+  totalPages: number
+  sortBy: string
+  sortOrder: string
 }
 
 export interface PlaceSpacesResponse {
@@ -34,8 +44,12 @@ export interface PlaceSpacesResponse {
   message: string
   data: {
     place: PlaceSpacesPlace
-    spaces: Space[]
+    items: Space[]
+    meta: PlaceSpacesMeta
   }
   timestamp: string
   path: string
 }
+
+export type SpaceSortBy = 'name' | 'capacity'
+export type SortOrder = 'asc' | 'desc'
