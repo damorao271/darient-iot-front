@@ -32,7 +32,9 @@ export function SpaceCard({ space, timezone }: SpaceCardProps) {
             <span className="inline-block px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600 text-xs font-medium mb-1.5">
               {space.reference}
             </span>
-            <h3 className="text-lg font-semibold text-slate-900">{space.name}</h3>
+            <h3 className="text-lg font-semibold text-slate-900">
+              {space.name}
+            </h3>
             <p className="text-sm text-slate-500 mt-0.5">
               Capacity: {space.capacity} · {space.description}
             </p>
@@ -77,8 +79,18 @@ export function SpaceCard({ space, timezone }: SpaceCardProps) {
           </div>
         ) : (
           <p className="text-sm text-slate-500 flex items-center gap-2">
-            <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-4 h-4 text-slate-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             No reservations
           </p>

@@ -1,14 +1,26 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { usePlaceSpaces } from '../hooks/usePlaceSpaces'
+import { useCreateSpace } from '../hooks/useCreateSpace'
+import type { CreateSpaceFormValues } from '../schemas/space.schema'
 import { SpaceCard } from '../components/SpaceCard'
 import { AppSidebar } from '../components/AppSidebar'
+import { CreateSpaceModal } from '../components/CreateSpaceModal'
 
 export function PlaceSpaces() {
   const { placeId } = useParams<{ placeId: string }>()
   const { data, isLoading, error } = usePlaceSpaces(placeId)
+  const createSpace = useCreateSpace(placeId ?? '')
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
   const place = data?.place
   const spaces = data?.spaces ?? []
+
+  function handleCreateSpace(values: CreateSpaceFormValues) {
+    createSpace.mutate(values, {
+      onSuccess: () => setIsCreateModalOpen(false),
+    })
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
@@ -86,9 +98,18 @@ export function PlaceSpaces() {
               <h2 className="text-2xl font-bold text-slate-900">
                 {place ? `${place.name} — Spaces` : 'Loading...'}
               </h2>
-              <span className="text-slate-600 text-sm">
-                {spaces.length} {spaces.length === 1 ? 'Space' : 'Spaces'}
-              </span>
+              <div className="flex items-center gap-4">
+                <span className="text-slate-600 text-sm">
+                  {spaces.length} {spaces.length === 1 ? 'Space' : 'Spaces'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsCreateModalOpen(true)}
+                  className="py-2 px-4 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition-colors"
+                >
+                  Create Space
+                </button>
+              </div>
             </div>
           </div>
 
@@ -132,6 +153,13 @@ export function PlaceSpaces() {
           )}
         </div>
       </main>
+
+      <CreateSpaceModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreateSpace}
+        isSubmitting={createSpace.isPending}
+      />
     </div>
   )
 }

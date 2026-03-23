@@ -1,0 +1,176 @@
+import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  createSpaceSchema,
+  type CreateSpaceFormInput,
+  type CreateSpaceFormValues,
+} from '../schemas/space.schema'
+import { Input } from './ui/Input'
+import { Textarea } from './ui/Textarea'
+
+interface CreateSpaceModalProps {
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (values: CreateSpaceFormValues) => void
+  isSubmitting?: boolean
+}
+
+export function CreateSpaceModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  isSubmitting = false,
+}: CreateSpaceModalProps) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CreateSpaceFormInput, unknown, CreateSpaceFormValues>({
+    resolver: zodResolver(createSpaceSchema),
+  })
+
+  useEffect(() => {
+    if (!isOpen) {
+      reset()
+      return
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape' && !isSubmitting) onClose()
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, isSubmitting, onClose, reset])
+
+  if (!isOpen) return null
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="create-space-title"
+    >
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+        onClick={isSubmitting ? undefined : onClose}
+      />
+
+      {/* Modal */}
+      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+          <h2
+            id="create-space-title"
+            className="text-lg font-semibold text-slate-900"
+          >
+            Create New Space
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isSubmitting}
+            className="p-1 text-slate-400 hover:text-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Close"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+          <div className="px-6 py-5 flex flex-col gap-4">
+            <Input
+              label="Name *"
+              placeholder="e.g. Boardroom B"
+              error={errors.name?.message}
+              {...register('name')}
+            />
+
+            <div className="grid grid-cols-2 gap-3">
+              <Input
+                label="Reference"
+                placeholder="REF-001"
+                error={errors.reference?.message}
+                {...register('reference')}
+              />
+              <Input
+                label="Capacity *"
+                type="number"
+                min={1}
+                placeholder="10"
+                error={errors.capacity?.message}
+                {...register('capacity', { valueAsNumber: true })}
+              />
+            </div>
+
+            <Textarea
+              label="Description"
+              placeholder="Describe the amenities and purpose of this space..."
+              error={errors.description?.message}
+              {...register('description')}
+            />
+          </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200">
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={isSubmitting}
+              className="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isSubmitting && (
+                <svg
+                  className="w-4 h-4 animate-spin"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+              )}
+              {isSubmitting ? 'Creating...' : 'Create Space'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>,
+    document.body,
+  )
+}
