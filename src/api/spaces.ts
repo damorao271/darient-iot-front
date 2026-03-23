@@ -56,3 +56,7 @@ export async function updateSpace(
   const { data } = await api.patch<{ data: Space }>(`/spaces/${spaceId}`, body)
   return data.data
 }
+
+export async function deleteSpace(spaceId: string): Promise<void> {
+  await api.delete(`/spaces/${spaceId}`)
+}
