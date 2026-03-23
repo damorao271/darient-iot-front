@@ -27,14 +27,8 @@ export function PlaceCard({ place }: PlaceCardProps) {
             />
           </svg>
         </div>
-        <div
-          className={`absolute top-3 right-3 px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 ${
-            status.variant === 'red'
-              ? 'bg-red-50 text-red-700'
-              : 'bg-emerald-50 text-emerald-700'
-          }`}
-        >
-          <span className={`w-1.5 h-1.5 rounded-full ${'bg-emerald-500'}`} />
+        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 bg-emerald-50 text-emerald-700">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
           Available
         </div>
       </div>
