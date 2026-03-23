@@ -3,6 +3,7 @@ import { usePlaces } from '../hooks/usePlaces'
 import { ApiErrorAlert } from '../components/ApiErrorAlert'
 import { PlaceCard } from '../components/PlaceCard'
 import { RegisterPlaceCard } from '../components/RegisterPlaceCard'
+import { AppSidebar } from '../components/AppSidebar'
 
 export function BrowsePlaces() {
   const [page, setPage] = useState(1)
@@ -17,32 +18,7 @@ export function BrowsePlaces() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
-        <div className="p-6 border-b border-slate-200">
-          <h1 className="text-lg font-bold text-slate-900">Spaces Manager</h1>
-          <p className="text-xs text-slate-500 mt-0.5">GLOBAL PORTFOLIO</p>
-        </div>
-        <nav className="flex-1 p-3">
-          <a href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 text-sm">
-            Overview
-          </a>
-          <a href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-violet-50 text-violet-700 font-medium text-sm border-l-2 border-violet-600 -ml-[1px] pl-4">
-            Locations
-          </a>
-          <a href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 text-sm">
-            Analytics
-          </a>
-          <a href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 text-sm">
-            Settings
-          </a>
-        </nav>
-        <div className="p-4">
-          <button className="w-full py-2.5 px-4 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition-colors">
-            + Add New Place
-          </button>
-        </div>
-      </aside>
+      <AppSidebar />
 
       {/* Main content */}
       <main className="flex-1 flex flex-col min-w-0">
