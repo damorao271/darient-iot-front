@@ -1,5 +1,10 @@
 import type { Space } from './space.types'
 
+export interface FetchPlacesParams {
+  page?: number
+  limit?: number
+}
+
 export interface Place {
   id: string
   name: string

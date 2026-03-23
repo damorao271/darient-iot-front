@@ -1,3 +1,5 @@
+import type { CreateSpaceFormValues } from '../schemas/space.schema'
+
 export interface Reservation {
   id: string
   clientEmail: string
@@ -53,3 +55,35 @@ export interface PlaceSpacesResponse {
 
 export type SpaceSortBy = 'name' | 'capacity'
 export type SortOrder = 'asc' | 'desc'
+
+// API params, request bodies & response shapes
+export interface FetchPlaceSpacesParams {
+  page?: number
+  pageSize?: number
+  sortBy?: SpaceSortBy
+  sortOrder?: SortOrder
+}
+
+export interface CreateSpaceBody extends CreateSpaceFormValues {
+  placeId: string
+}
+
+export interface UpdateSpaceBody extends CreateSpaceFormValues {}
+
+export interface PlaceSpacesData {
+  place: PlaceSpacesPlace
+  spaces: Space[]
+  total: number
+}
+
+export interface SpaceDetailPlace {
+  id: string
+  name: string
+  timezone?: string
+  latitude?: number
+  longitude?: number
+}
+
+export interface SpaceDetailResponse {
+  data: Space & { place?: SpaceDetailPlace }
+}

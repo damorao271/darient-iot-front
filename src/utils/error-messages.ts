@@ -31,7 +31,11 @@ export function getUserFriendlyMessage(error: unknown): string {
     if (error.statusCode === 403)
       return "You don't have permission to perform this action."
     if (error.statusCode === 404)
-      return 'The space was not found. It may have already been deleted.'
+      return (
+        error.message ||
+        error.backendError ||
+        'The item was not found. It may have already been deleted.'
+      )
     if (error.statusCode === 409)
       return (
         error.message ||
