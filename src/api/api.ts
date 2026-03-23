@@ -36,7 +36,27 @@ api.interceptors.response.use(
       console.error('[API Error]', envelope.message)
       return Promise.reject(new ApiError(envelope, error))
     }
-    const message = error.response?.data?.message ?? error.message
+    // Build ApiError from HTTP response so status-based messages work (404, 409, etc.)
+    if (error.response) {
+      const status = error.response.status
+      const message =
+        (error.response.data as { message?: string })?.message ?? error.message
+      console.error('[API Error]', message)
+      return Promise.reject(
+        new ApiError(
+          {
+            success: false,
+            statusCode: status,
+            message,
+            error: message,
+            timestamp: new Date().toISOString(),
+            path: String(error.config?.url ?? ''),
+          },
+          error,
+        ),
+      )
+    }
+    const message = error.message
     console.error('[API Error]', message)
     return Promise.reject(error)
   },

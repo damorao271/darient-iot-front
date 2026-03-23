@@ -1,15 +1,16 @@
 import { useEffect } from 'react'
-import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   createSpaceSchema,
+  EMPTY_SPACE_FORM_INPUT,
   type CreateSpaceFormInput,
   type CreateSpaceFormValues,
 } from '../schemas/space.schema'
 import type { Space } from '../types/spaces.types'
 import { Input } from './ui/Input'
 import { Textarea } from './ui/Textarea'
+import { BaseModal } from './ui/BaseModal'
 
 export type SpaceFormMode = 'create' | 'edit'
 
@@ -39,11 +40,12 @@ export function SpaceFormModal({
     formState: { errors },
   } = useForm<CreateSpaceFormInput, unknown, CreateSpaceFormValues>({
     resolver: zodResolver(createSpaceSchema),
+    defaultValues: EMPTY_SPACE_FORM_INPUT,
   })
 
   useEffect(() => {
     if (!isOpen) {
-      reset()
+      reset(EMPTY_SPACE_FORM_INPUT)
       return
     }
     if (isEdit && space) {
@@ -54,20 +56,9 @@ export function SpaceFormModal({
         description: space.description ?? '',
       })
     } else {
-      reset()
+      reset(EMPTY_SPACE_FORM_INPUT)
     }
   }, [isOpen, isEdit, space, reset])
-
-  useEffect(() => {
-    if (!isOpen) return
-
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape' && !isSubmitting) onClose()
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, isSubmitting, onClose])
 
   if (!isOpen) return null
 
@@ -80,19 +71,12 @@ export function SpaceFormModal({
       ? 'Save Changes'
       : 'Create Space'
 
-  return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="space-form-title"
+  return (
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      canClose={!isSubmitting}
     >
-      <div
-        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
-        onClick={isSubmitting ? undefined : onClose}
-      />
-
-      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
           <h2
             id="space-form-title"
@@ -196,8 +180,6 @@ export function SpaceFormModal({
             </button>
           </div>
         </form>
-      </div>
-    </div>,
-    document.body,
+    </BaseModal>
   )
 }

@@ -3,12 +3,14 @@ import { Link, useParams } from 'react-router-dom'
 import { usePlaceSpaces } from '../hooks/usePlaceSpaces'
 import { useCreateSpace } from '../hooks/useCreateSpace'
 import { useUpdateSpace } from '../hooks/useUpdateSpace'
+import { useDeleteSpace } from '../hooks/useDeleteSpace'
 import type { CreateSpaceFormValues } from '../schemas/space.schema'
 import type { Space, SpaceSortBy, SortOrder } from '../types/spaces.types'
 import { SPACE_PAGE_SIZE_OPTIONS, SPACE_SORT_BY_OPTIONS } from '../constants/spaces'
 import { SpaceCard } from '../components/SpaceCard'
 import { AppSidebar } from '../components/AppSidebar'
 import { SpaceFormModal } from '../components/SpaceFormModal'
+import { DeleteSpaceConfirmModal } from '../components/DeleteSpaceConfirmModal'
 
 export function PlaceSpaces() {
   const { placeId } = useParams<{ placeId: string }>()
@@ -25,8 +27,12 @@ export function PlaceSpaces() {
   })
   const createSpace = useCreateSpace(placeId ?? '')
   const updateSpace = useUpdateSpace(placeId ?? '')
+  const deleteSpaceMutation = useDeleteSpace(placeId ?? '', {
+    showErrorToast: false,
+  })
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [spaceToEdit, setSpaceToEdit] = useState<Space | null>(null)
+  const [spaceToDelete, setSpaceToDelete] = useState<Space | null>(null)
 
   const place = data?.place
   const spaces = data?.spaces ?? []
@@ -49,6 +55,16 @@ export function PlaceSpaces() {
   function closeSpaceForm() {
     setIsCreateModalOpen(false)
     setSpaceToEdit(null)
+  }
+
+  function handleDeleteSpace(space: Space) {
+    setSpaceToDelete(space)
+  }
+
+  function confirmDeleteSpace(spaceId: string) {
+    deleteSpaceMutation.mutate(spaceId, {
+      onSuccess: () => setSpaceToDelete(null),
+    })
   }
 
   return (
@@ -235,6 +251,11 @@ export function PlaceSpaces() {
                   space={space}
                   timezone={place?.timezone}
                   onEdit={setSpaceToEdit}
+                  onDelete={handleDeleteSpace}
+                  isDeleting={
+                    deleteSpaceMutation.isPending &&
+                    spaceToDelete?.id === space.id
+                  }
                 />
               ))}
             </div>
@@ -318,6 +339,15 @@ export function PlaceSpaces() {
         mode={spaceToEdit ? 'edit' : 'create'}
         space={spaceToEdit}
         isSubmitting={createSpace.isPending || updateSpace.isPending}
+      />
+
+      <DeleteSpaceConfirmModal
+        isOpen={!!spaceToDelete}
+        onClose={() => setSpaceToDelete(null)}
+        onConfirm={confirmDeleteSpace}
+        space={spaceToDelete}
+        isDeleting={deleteSpaceMutation.isPending}
+        error={deleteSpaceMutation.error}
       />
     </div>
   )
