@@ -10,7 +10,11 @@ export function useCreateReservation(spaceId: string) {
 
   return useMutation({
     mutationFn: (values: CreateReservationFormValues) =>
-      createReservation({ ...values, spaceId }),
+      createReservation({
+        ...values,
+        spaceId,
+        reservationDate: `${values.reservationDate}T00:00:00.000Z`,
+      }),
     onSuccess: () => {
       toast.success('Reservation created successfully')
       queryClient.invalidateQueries({
