@@ -5,6 +5,11 @@ export interface Place {
   name: string
   latitude?: number
   longitude?: number
+  timezone?: string
+  createdAt?: string
+  updatedAt?: string
+  spaceCount?: number
+  totalCapacity?: number
   spaces?: Space[]
 }
 
