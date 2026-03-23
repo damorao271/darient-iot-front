@@ -4,6 +4,7 @@ import { useSpace } from '../hooks/useSpace'
 import { useCreateReservation } from '../hooks/useCreateReservation'
 import { useReservations } from '../hooks/useReservations'
 import { useCancelReservation } from '../hooks/useCancelReservation'
+import { useUpdateReservation } from '../hooks/useUpdateReservation'
 import { AppSidebar } from '../components/AppSidebar'
 import { AppHeader } from '../components/AppHeader'
 import { CreateReservationForm } from '../components/CreateReservationForm'
@@ -11,6 +12,7 @@ import { ReservationsTable } from '../components/ReservationsTable'
 import { ReservationsTableFilters } from '../components/ReservationsTableFilters'
 import { ApiErrorAlert } from '../components/ApiErrorAlert'
 import { CancelReservationConfirmModal } from '../components/CancelReservationConfirmModal'
+import { EditReservationModal } from '../components/EditReservationModal'
 import { LocationModal } from '../components/LocationModal'
 import { useEffect, useRef } from 'react'
 import {
@@ -19,6 +21,7 @@ import {
   getCurrentMonthDateRange,
 } from '../utils/date'
 import type { ReservationListItem } from '../types/reservation.types'
+import type { CreateReservationFormValues } from '../schemas/reservation.schema'
 import { isValidEmail } from '../utils/string'
 import { showErrorToast } from '../utils/toast'
 
@@ -112,8 +115,13 @@ export function SpaceDetail() {
   const timezone = place?.timezone
   const [reservationToCancel, setReservationToCancel] =
     useState<ReservationListItem | null>(null)
+  const [reservationToEdit, setReservationToEdit] =
+    useState<ReservationListItem | null>(null)
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false)
   const cancelReservationMutation = useCancelReservation({
+    showErrorToast: false,
+  })
+  const updateReservationMutation = useUpdateReservation({
     showErrorToast: false,
   })
 
@@ -121,6 +129,26 @@ export function SpaceDetail() {
     cancelReservationMutation.mutate(id, {
       onSuccess: () => setReservationToCancel(null),
     })
+  }
+
+  const handleConfirmEditReservation = (
+    reservationId: string,
+    values: CreateReservationFormValues,
+  ) => {
+    updateReservationMutation.mutate(
+      {
+        id: reservationId,
+        body: {
+          clientEmail: values.clientEmail,
+          reservationDate: `${values.reservationDate}T00:00:00.000Z`,
+          startTime: values.startTime,
+          endTime: values.endTime,
+        },
+      },
+      {
+        onSuccess: () => setReservationToEdit(null),
+      },
+    )
   }
 
   if (error) {
@@ -463,6 +491,10 @@ export function SpaceDetail() {
                       meta={displayData.meta}
                       timezone={place?.timezone}
                       onPageChange={setReservationsPage}
+                      onEditReservation={(res) => {
+                        updateReservationMutation.reset()
+                        setReservationToEdit(res)
+                      }}
                       onCancelReservation={(res) => setReservationToCancel(res)}
                       cancelReservationId={
                         cancelReservationMutation.isPending
@@ -486,6 +518,16 @@ export function SpaceDetail() {
         timezone={place?.timezone}
         isDeleting={cancelReservationMutation.isPending}
         error={cancelReservationMutation.error}
+      />
+
+      <EditReservationModal
+        isOpen={!!reservationToEdit}
+        onClose={() => setReservationToEdit(null)}
+        onSubmit={handleConfirmEditReservation}
+        reservation={reservationToEdit}
+        timezone={place?.timezone}
+        isSubmitting={updateReservationMutation.isPending}
+        error={updateReservationMutation.error}
       />
 
       {place?.latitude != null && place?.longitude != null && (
