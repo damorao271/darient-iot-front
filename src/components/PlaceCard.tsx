@@ -77,7 +77,7 @@ export function PlaceCard({ place }: PlaceCardProps) {
               Total Capacity
             </div>
             <div className="text-slate-900 font-medium">
-              {place?.spaces?.reduce((acc, space) => acc + space.capacity, 0)}{' '}
+              {place.totalCapacity ?? place?.spaces?.reduce((acc, space) => acc + space.capacity, 0) ?? 0}{' '}
               people
             </div>
           </div>
@@ -86,7 +86,7 @@ export function PlaceCard({ place }: PlaceCardProps) {
               Spaces Available
             </div>
             <div className="text-slate-900 font-medium">
-              {place?.spaces?.length}
+              {place.spaceCount ?? place?.spaces?.length ?? 0}
             </div>
           </div>
         </div>
