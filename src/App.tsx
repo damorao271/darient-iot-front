@@ -3,6 +3,7 @@ import { Toaster } from 'sonner'
 import { BrowsePlaces } from './pages/BrowsePlaces'
 import { PlaceSpaces } from './pages/PlaceSpaces'
 import { SpaceDetail } from './pages/SpaceDetail'
+import { SpaceIoTDashboard } from './pages/SpaceIoTDashboard'
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route path="/" element={<BrowsePlaces />} />
         <Route path="/places/:placeId/spaces" element={<PlaceSpaces />} />
         <Route path="/spaces/:spaceId" element={<SpaceDetail />} />
+        <Route path="/spaces/:spaceId/iot" element={<SpaceIoTDashboard />} />
       </Routes>
       <Toaster
         position="top-right"

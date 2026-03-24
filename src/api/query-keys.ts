@@ -2,6 +2,12 @@ export const queryKeys = {
   spaces: {
     detail: (spaceId: string) => ['spaces', 'detail', spaceId] as const,
   },
+  iot: {
+    telemetry: (spaceId: string) => ['iot', 'telemetry', spaceId] as const,
+    alerts: (spaceId: string, status?: string) =>
+      ['iot', 'alerts', spaceId, status] as const,
+    device: (spaceId: string) => ['iot', 'device', spaceId] as const,
+  },
   reservations: {
     list: (
       spaceId?: string,
