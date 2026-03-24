@@ -15,6 +15,8 @@ export interface Space {
   reference: string
   capacity: number
   description: string
+  openTime?: string | null
+  closeTime?: string | null
   createdAt: string
   updatedAt: string
   reservations: Reservation[]
