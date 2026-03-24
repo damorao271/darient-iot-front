@@ -61,6 +61,7 @@ export function ReservationsTable({
                 return (
                   <tr
                     key={res.id}
+                    data-cy="reservation-row"
                     className={`border-t border-slate-100 transition-colors ${
                       isPast
                         ? 'bg-slate-200 hover:bg-slate-300/80'
@@ -94,6 +95,7 @@ export function ReservationsTable({
                         ) : (
                           <button
                             type="button"
+                            data-cy="edit-reservation-btn"
                             onClick={() => onEditReservation?.(res)}
                             className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
                             aria-label="Edit reservation"
@@ -118,6 +120,7 @@ export function ReservationsTable({
                         ) : (
                           <button
                             type="button"
+                            data-cy="cancel-reservation-btn"
                             onClick={() => onCancelReservation?.(res)}
                             disabled={cancelReservationId === res.id}
                             className="p-2 rounded-lg text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"

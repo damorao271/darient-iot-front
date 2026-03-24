@@ -49,7 +49,7 @@ export function CreateReservationForm({
   }, [startTime, endTime, setValue])
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 sticky top-6">
+    <div data-cy="create-reservation-form" className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 sticky top-6">
       <h3 className="font-semibold text-slate-900 mb-1">Create Reservation</h3>
       <form
         className="space-y-4"

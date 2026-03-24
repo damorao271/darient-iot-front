@@ -82,6 +82,7 @@ export function EditReservationModal({
       onClose={onClose}
       canClose={canClose}
       contentClassName="max-w-lg"
+      data-cy="edit-reservation-modal"
     >
       <div className="px-6 py-5 border-b border-slate-200">
         <h2 className="text-lg font-semibold text-slate-900">Edit Reservation</h2>

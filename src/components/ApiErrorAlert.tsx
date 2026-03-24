@@ -26,6 +26,7 @@ export function ApiErrorAlert({ error, onRetry, variant = 'inline' }: ApiErrorAl
 
   return (
     <div
+      data-cy="api-error-alert"
       role="alert"
       aria-live="assertive"
       className={`mb-6 p-4 bg-red-50 text-red-800 ${baseClasses}`}
@@ -75,10 +76,11 @@ export function ApiErrorAlert({ error, onRetry, variant = 'inline' }: ApiErrorAl
         {onRetry && (
           <button
             type="button"
+            data-cy="retry-btn"
             onClick={onRetry}
             className="shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-1"
           >
-            Try again
+            Retry
           </button>
         )}
       </div>

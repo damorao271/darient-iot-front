@@ -9,6 +9,7 @@ interface BaseModalProps {
   children: React.ReactNode
   /** Optional class for the inner content wrapper (the dialog panel) */
   contentClassName?: string
+  'data-cy'?: string
 }
 
 export function BaseModal({
@@ -17,6 +18,7 @@ export function BaseModal({
   canClose = true,
   children,
   contentClassName,
+  'data-cy': dataCy,
 }: BaseModalProps) {
   useEffect(() => {
     if (!isOpen) return
@@ -43,6 +45,7 @@ export function BaseModal({
       />
 
       <div
+        data-cy={dataCy}
         className={`relative bg-white rounded-xl shadow-xl w-full max-w-md ${contentClassName ?? ''}`}
       >
         {children}

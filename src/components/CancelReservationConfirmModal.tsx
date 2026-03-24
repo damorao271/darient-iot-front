@@ -40,6 +40,7 @@ export function CancelReservationConfirmModal({
       isOpen={isOpen}
       onClose={onClose}
       canClose={canClose}
+      data-cy="cancel-reservation-modal"
     >
       <div className="px-6 py-5">
         <h2

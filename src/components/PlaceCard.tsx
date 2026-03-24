@@ -10,7 +10,7 @@ interface PlaceCardProps {
 export function PlaceCard({ place }: PlaceCardProps) {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false)
   return (
-    <article className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <article data-cy="place-card" className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       <div className="relative aspect-[4/3] bg-slate-100">
         <div className="w-full h-full flex items-center justify-center text-slate-400">
           <svg
