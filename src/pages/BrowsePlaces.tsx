@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { usePlaces } from '../hooks/usePlaces'
 import { ApiErrorAlert } from '../components/ApiErrorAlert'
 import { PlaceCard } from '../components/PlaceCard'
-import { RegisterPlaceCard } from '../components/RegisterPlaceCard'
 import { AppSidebar } from '../components/AppSidebar'
 import { AppHeader } from '../components/AppHeader'
 
@@ -103,7 +102,6 @@ export function BrowsePlaces() {
               {places.map((place) => (
                 <PlaceCard key={place.id} place={place} />
               ))}
-              <RegisterPlaceCard />
             </div>
           )}
 

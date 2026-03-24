@@ -156,7 +156,7 @@ export function SpaceDetail() {
       <div className="min-h-screen bg-slate-50 flex">
         <AppSidebar />
         <main className="flex-1 flex flex-col min-w-0">
-          <AppHeader searchPlaceholder="Search spaces..." />
+          <AppHeader />
           <div className="flex-1 overflow-auto p-6 flex items-center justify-center">
             <p className="text-slate-600">Failed to load space details.</p>
           </div>
@@ -170,7 +170,7 @@ export function SpaceDetail() {
       <AppSidebar />
 
       <main className="flex-1 flex flex-col min-w-0">
-        <AppHeader searchPlaceholder="Search spaces..." />
+        <AppHeader />
 
         <div className="flex-1 overflow-auto p-6">
           {isLoading ? (
@@ -245,35 +245,34 @@ export function SpaceDetail() {
                         <span>{place.timezone}</span>
                       </div>
                     )}
-                    {place.latitude != null &&
-                      place.longitude != null && (
-                        <button
-                          type="button"
-                          onClick={() => setIsLocationModalOpen(true)}
-                          className="inline-flex items-center gap-1.5 text-violet-600 hover:text-violet-700 font-medium"
+                    {place.latitude != null && place.longitude != null && (
+                      <button
+                        type="button"
+                        onClick={() => setIsLocationModalOpen(true)}
+                        className="inline-flex items-center gap-1.5 text-violet-600 hover:text-violet-700 font-medium"
+                      >
+                        <svg
+                          className="w-4 h-4 shrink-0"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
                         >
-                          <svg
-                            className="w-4 h-4 shrink-0"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                          </svg>
-                          Show Location
-                        </button>
-                      )}
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                        Show Location
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
