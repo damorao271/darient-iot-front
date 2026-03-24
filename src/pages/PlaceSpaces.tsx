@@ -77,7 +77,7 @@ export function PlaceSpaces() {
 
       {/* Main content */}
       <main className="flex-1 flex flex-col min-w-0">
-        <AppHeader searchPlaceholder="Search spaces..." />
+        <AppHeader />
 
         {/* Page content */}
         <div className="flex-1 overflow-auto p-6">
