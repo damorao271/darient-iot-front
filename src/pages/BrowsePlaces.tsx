@@ -46,37 +46,6 @@ export function BrowsePlaces() {
             </div>
           </div>
 
-          {/* Filters */}
-          <div className="flex flex-wrap items-center gap-3 mb-6 p-3 bg-sky-50 rounded-lg border border-sky-100">
-            <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">
-                Location
-              </label>
-              <select className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white text-slate-700">
-                <option>All Global Hubs</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">
-                Capacity
-              </label>
-              <select className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white text-slate-700">
-                <option>Any Capacity</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">
-                Property Type
-              </label>
-              <select className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white text-slate-700">
-                <option>All Types</option>
-              </select>
-            </div>
-            <button className="ml-auto px-4 py-2 rounded-lg bg-sky-100 text-sky-800 text-sm font-medium hover:bg-sky-200 transition-colors">
-              Advanced Filters
-            </button>
-          </div>
-
           {/* Grid */}
           {error && <ApiErrorAlert error={error} onRetry={refetch} />}
 
