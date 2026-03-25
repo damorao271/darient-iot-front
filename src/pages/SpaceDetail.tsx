@@ -25,6 +25,7 @@ import type { ReservationListItem } from '../types/reservation.types'
 import type { CreateReservationFormValues } from '../schemas/reservation.schema'
 import { isValidEmail } from '../utils/string'
 import { showErrorToast } from '../utils/toast'
+import { resolvePlaceCoverSrc } from '../utils/place-image'
 
 type SortOrderOption = 'asc' | 'desc'
 
@@ -46,6 +47,7 @@ export function SpaceDetail() {
   const [searchTrigger, setSearchTrigger] = useState(0)
   const [searchEmailError, setSearchEmailError] = useState<string | undefined>()
   const [dateRangeError, setDateRangeError] = useState<string | undefined>()
+  const [spaceHeroImageFailed, setSpaceHeroImageFailed] = useState(false)
 
   const handleSearch = () => {
     const trimmed = formFilters.searchEmail.trim()
@@ -82,6 +84,8 @@ export function SpaceDetail() {
     : undefined
 
   const { data: space, isLoading, error } = useSpace(spaceId)
+  const place = space?.place
+  const placeHeroSrc = place ? resolvePlaceCoverSrc(place) : undefined
   const {
     data: reservationsData,
     isLoading: reservationsLoading,
@@ -112,8 +116,11 @@ export function SpaceDetail() {
     if (reservationsError) showErrorToast(reservationsError)
   }, [reservationsError])
 
+  useEffect(() => {
+    setSpaceHeroImageFailed(false)
+  }, [spaceId, place?.id])
+
   const createReservation = useCreateReservation(spaceId ?? '')
-  const place = space?.place
   const reservations = space?.reservations ?? []
   const timezone = place?.timezone
   const [reservationToCancel, setReservationToCancel] =
@@ -358,22 +365,35 @@ export function SpaceDetail() {
                     </div>
                     <div className="shrink-0 md:w-72">
                       <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-200">
-                        <div className="absolute inset-0 flex items-center justify-center text-slate-400">
-                          <svg
-                            className="w-16 h-16"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={1.5}
-                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                            />
-                          </svg>
-                        </div>
-                        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500 text-white">
+                        {placeHeroSrc && !spaceHeroImageFailed ? (
+                          <img
+                            src={placeHeroSrc}
+                            alt={
+                              place
+                                ? `${place.name} — location photo`
+                                : 'Location photo'
+                            }
+                            className="absolute inset-0 w-full h-full object-cover"
+                            onError={() => setSpaceHeroImageFailed(true)}
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center text-slate-400">
+                            <svg
+                              className="w-16 h-16"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={1.5}
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                              />
+                            </svg>
+                          </div>
+                        )}
+                        <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500 text-white">
                           Available Now
                         </div>
                       </div>

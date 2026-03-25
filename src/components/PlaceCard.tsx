@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { Place } from '../types/places.types'
 import { LocationModal } from './LocationModal'
+import { resolvePlaceCoverSrc } from '../utils/place-image'
 
 interface PlaceCardProps {
   place: Place
@@ -9,25 +10,36 @@ interface PlaceCardProps {
 
 export function PlaceCard({ place }: PlaceCardProps) {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false)
+  const [imageFailed, setImageFailed] = useState(false)
+  const coverSrc = resolvePlaceCoverSrc(place)
   return (
     <article data-cy="place-card" className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       <div className="relative aspect-[4/3] bg-slate-100">
-        <div className="w-full h-full flex items-center justify-center text-slate-400">
-          <svg
-            className="w-16 h-16"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-            />
-          </svg>
-        </div>
-        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 bg-emerald-50 text-emerald-700">
+        {!imageFailed ? (
+          <img
+            src={coverSrc}
+            alt={`${place.name} — location photo`}
+            className="absolute inset-0 w-full h-full object-cover"
+            onError={() => setImageFailed(true)}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-slate-400">
+            <svg
+              className="w-16 h-16"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              />
+            </svg>
+          </div>
+        )}
+        <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 bg-emerald-50 text-emerald-700">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
           Available
         </div>

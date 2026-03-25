@@ -22,7 +22,7 @@ export function BrowsePlaces() {
 
       {/* Main content */}
       <main className="flex-1 flex flex-col min-w-0">
-        <AppHeader searchPlaceholder="Quick find..." />
+        <AppHeader />
 
         {/* Page content */}
         <div className="flex-1 overflow-auto p-6">
