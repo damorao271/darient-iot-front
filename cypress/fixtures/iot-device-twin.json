@@ -1,0 +1,19 @@
+{
+  "data": {
+    "desired": {
+      "id": "desired-1",
+      "spaceId": "space-1",
+      "co2AlertThreshold": 1000,
+      "samplingIntervalSec": 30,
+      "updatedAt": "2026-03-24T00:00:00.000Z"
+    },
+    "reported": {
+      "id": "reported-1",
+      "spaceId": "space-1",
+      "samplingIntervalSec": 30,
+      "co2AlertThreshold": 1000,
+      "firmwareVersion": "1.2.3",
+      "ts": "2026-03-24T10:00:00.000Z"
+    }
+  }
+}

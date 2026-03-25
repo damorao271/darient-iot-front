@@ -102,6 +102,7 @@ export function PlaceSpaces() {
                 </span>
                 <button
                   type="button"
+                  data-cy="create-space-btn"
                   onClick={() => setIsCreateModalOpen(true)}
                   className="py-2 px-4 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition-colors"
                 >

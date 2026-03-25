@@ -1,0 +1,61 @@
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "OK",
+  "data": {
+    "place": {
+      "id": "place-1",
+      "name": "Downtown Hub",
+      "latitude": 40.7128,
+      "longitude": -74.006,
+      "timezone": "America/New_York",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    "items": [
+      {
+        "id": "space-1",
+        "name": "Boardroom A",
+        "reference": "REF-001",
+        "capacity": 20,
+        "description": "Main boardroom with AV equipment",
+        "openTime": "08:00",
+        "closeTime": "20:00",
+        "createdAt": "2024-01-01T00:00:00.000Z",
+        "updatedAt": "2024-01-01T00:00:00.000Z",
+        "reservations": []
+      },
+      {
+        "id": "space-2",
+        "name": "Focus Room B",
+        "reference": "REF-002",
+        "capacity": 4,
+        "description": "Small quiet room",
+        "openTime": null,
+        "closeTime": null,
+        "createdAt": "2024-01-01T00:00:00.000Z",
+        "updatedAt": "2024-01-01T00:00:00.000Z",
+        "reservations": [
+          {
+            "id": "res-existing-1",
+            "clientEmail": "alice@example.com",
+            "startAt": "2026-04-01T09:00:00.000Z",
+            "endAt": "2026-04-01T10:00:00.000Z",
+            "createdAt": "2024-01-01T00:00:00.000Z",
+            "updatedAt": "2024-01-01T00:00:00.000Z"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "page": 1,
+      "pageSize": 10,
+      "total": 2,
+      "totalPages": 1,
+      "sortBy": "name",
+      "sortOrder": "asc"
+    }
+  },
+  "timestamp": "2026-03-24T00:00:00.000Z",
+  "path": "/places/place-1/spaces"
+}

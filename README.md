@@ -74,6 +74,42 @@ npm run preview
 
 ---
 
+## E2E Tests (Cypress)
+
+The frontend has end-to-end tests covering the main flows. The dev server must be running at `http://localhost:5173` before executing the tests.
+
+### Run all tests headlessly
+
+```bash
+npm run dev        # in one terminal, keep this running
+npm run cy:run     # in another terminal
+```
+
+### Run a specific spec file
+
+```bash
+npx cypress run --spec "cypress/e2e/space-detail.cy.ts"
+```
+
+Available spec files:
+
+| Spec file | What it tests |
+| --- | --- |
+| `cypress/e2e/browse-places.cy.ts` | Browsing the list of places |
+| `cypress/e2e/place-spaces.cy.ts` | Listing and managing spaces inside a place |
+| `cypress/e2e/space-detail.cy.ts` | Space detail view and reservations |
+| `cypress/e2e/iot-dashboard.cy.ts` | IoT dashboard (telemetry, alerts, device twin) |
+
+### Open the interactive Cypress UI
+
+```bash
+npm run cy:open
+```
+
+This launches the Cypress Test Runner where you can select and run individual tests with a live browser.
+
+---
+
 ## Full Docker & run options
 
 See [DOCKER.md](../DOCKER.md) in the parent folder for:

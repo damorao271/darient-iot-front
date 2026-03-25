@@ -107,7 +107,7 @@ export function SpaceFormModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <form data-cy="space-form" onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="px-6 py-5 flex flex-col gap-4">
             <Input
               label="Name *"

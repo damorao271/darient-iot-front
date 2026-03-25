@@ -33,6 +33,7 @@ export function DeleteSpaceConfirmModal({
       isOpen={isOpen}
       onClose={onClose}
       canClose={canClose}
+      data-cy="delete-space-modal"
     >
       <div className="px-6 py-5">
         <h2

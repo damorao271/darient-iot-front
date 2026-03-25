@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": "res-1",
+        "spaceId": "space-1",
+        "clientEmail": "john@example.com",
+        "startAt": "2026-04-01T09:00:00.000Z",
+        "endAt": "2026-04-01T10:00:00.000Z",
+        "status": "confirmed",
+        "createdAt": "2026-03-24T00:00:00.000Z",
+        "updatedAt": "2026-03-24T00:00:00.000Z"
+      },
+      {
+        "id": "res-2",
+        "spaceId": "space-1",
+        "clientEmail": "jane@example.com",
+        "startAt": "2026-04-01T11:00:00.000Z",
+        "endAt": "2026-04-01T12:00:00.000Z",
+        "status": "confirmed",
+        "createdAt": "2026-03-24T00:00:00.000Z",
+        "updatedAt": "2026-03-24T00:00:00.000Z"
+      }
+    ],
+    "meta": {
+      "page": 1,
+      "pageSize": 10,
+      "total": 2,
+      "totalPages": 1
+    }
+  }
+}

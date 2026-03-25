@@ -1,0 +1,25 @@
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "OK",
+  "data": [
+    {
+      "id": "place-1",
+      "name": "Downtown Hub",
+      "latitude": 40.7128,
+      "longitude": -74.006,
+      "timezone": "America/New_York",
+      "spaceCount": 3,
+      "totalCapacity": 60
+    },
+    {
+      "id": "place-2",
+      "name": "West Side Office",
+      "latitude": 40.7549,
+      "longitude": -74.004,
+      "timezone": "America/New_York",
+      "spaceCount": 2,
+      "totalCapacity": 30
+    }
+  ]
+}

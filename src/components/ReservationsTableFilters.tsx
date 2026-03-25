@@ -52,6 +52,7 @@ export function ReservationsTableFilters({
           onChange={(e) => onSearchEmailChange(e.target.value)}
           error={searchEmailError}
           className="border-slate-200 bg-white"
+          data-cy="reservation-filter-email"
         />
       </div>
       <div className="min-w-36">
@@ -61,6 +62,7 @@ export function ReservationsTableFilters({
           value={fromDate}
           onChange={(e) => onFromDateChange(e.target.value)}
           className="border-slate-200 bg-white"
+          data-cy="reservation-filter-from"
         />
       </div>
       <div className="min-w-36">
@@ -72,6 +74,7 @@ export function ReservationsTableFilters({
           onChange={(e) => onToDateChange(e.target.value)}
           error={dateRangeError}
           className="border-slate-200 bg-white"
+          data-cy="reservation-filter-to"
         />
       </div>
       <div className="min-w-32">
@@ -106,6 +109,7 @@ export function ReservationsTableFilters({
       <div className="flex items-end gap-2 ml-auto">
         <button
           type="button"
+          data-cy="reservation-filter-search"
           onClick={onSearch}
           className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 transition-colors uppercase tracking-wide"
         >
@@ -113,6 +117,7 @@ export function ReservationsTableFilters({
         </button>
         <button
           type="button"
+          data-cy="reservation-filter-clear"
           onClick={onClearFilters}
           className="px-4 py-2 rounded-lg border border-slate-300 bg-white text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-colors uppercase tracking-wide"
         >

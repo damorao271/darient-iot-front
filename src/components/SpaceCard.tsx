@@ -21,7 +21,7 @@ export function SpaceCard({
   const canDelete = !hasReservations && onDelete
 
   return (
-    <article className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
+    <article data-cy="space-card" className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
       <div className="p-5 flex flex-col flex-1 min-h-0">
         <div className="flex items-start gap-3 mb-4 shrink-0">
           <div className="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center shrink-0">
