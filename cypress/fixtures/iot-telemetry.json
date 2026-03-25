@@ -1,0 +1,26 @@
+{
+  "data": {
+    "readings": [
+      {
+        "id": "reading-1",
+        "spaceId": "space-1",
+        "ts": "2026-03-24T10:00:00.000Z",
+        "tempC": 22.5,
+        "humidityPct": 45,
+        "co2Ppm": 600,
+        "occupancy": 8,
+        "powerW": 1200
+      }
+    ],
+    "stats": {
+      "sampleCount": 1,
+      "avgTempC": 22.5,
+      "avgHumidityPct": 45,
+      "avgCo2Ppm": 600,
+      "maxCo2Ppm": 600,
+      "avgOccupancy": 8,
+      "maxOccupancy": 8,
+      "avgPowerW": 1200
+    }
+  }
+}

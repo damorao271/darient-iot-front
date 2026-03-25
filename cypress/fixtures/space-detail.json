@@ -1,0 +1,21 @@
+{
+  "data": {
+    "id": "space-1",
+    "name": "Boardroom A",
+    "reference": "REF-001",
+    "capacity": 20,
+    "description": "Main boardroom with AV equipment",
+    "openTime": "08:00",
+    "closeTime": "20:00",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z",
+    "reservations": [],
+    "place": {
+      "id": "place-1",
+      "name": "Downtown Hub",
+      "timezone": "America/New_York",
+      "latitude": 40.7128,
+      "longitude": -74.006
+    }
+  }
+}
