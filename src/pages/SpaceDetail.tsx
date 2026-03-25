@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useSpace } from '../hooks/useSpace'
+import { useAuth } from '../hooks/useAuth'
 import { useCreateReservation } from '../hooks/useCreateReservation'
 import { useReservations } from '../hooks/useReservations'
 import { useCancelReservation } from '../hooks/useCancelReservation'
@@ -37,6 +38,8 @@ const DEFAULT_FILTERS = () => ({
 
 export function SpaceDetail() {
   const { spaceId } = useParams<{ spaceId: string }>()
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'admin'
   const [formFilters, setFormFilters] = useState(DEFAULT_FILTERS)
   const [appliedFilters, setAppliedFilters] = useState(DEFAULT_FILTERS)
   const [reservationsPage, setReservationsPage] = useState(1)
@@ -287,15 +290,17 @@ export function SpaceDetail() {
                         <h1 className="text-2xl md:text-3xl font-bold text-slate-900">
                           {space.name}
                         </h1>
-                        <Link
-                          to={`/spaces/${spaceId}/iot`}
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition-colors shrink-0"
-                        >
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                          </svg>
-                          IoT Dashboard
-                        </Link>
+                        {isAdmin && (
+                          <Link
+                            to={`/spaces/${spaceId}/iot`}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition-colors shrink-0"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            IoT Dashboard
+                          </Link>
+                        )}
                       </div>
                       <p className="text-slate-600 text-sm leading-relaxed mb-4">
                         {space.description}
