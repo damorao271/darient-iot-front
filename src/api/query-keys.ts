@@ -1,4 +1,7 @@
 export const queryKeys = {
+  auth: {
+    me: ['auth', 'me'] as const,
+  },
   spaces: {
     detail: (spaceId: string) => ['spaces', 'detail', spaceId] as const,
   },
