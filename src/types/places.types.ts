@@ -8,6 +8,8 @@ export interface FetchPlacesParams {
 export interface Place {
   id: string
   name: string
+  /** Optional URL from API; when absent, a static image is chosen from /public/places/ */
+  imageUrl?: string
   latitude?: number
   longitude?: number
   timezone?: string

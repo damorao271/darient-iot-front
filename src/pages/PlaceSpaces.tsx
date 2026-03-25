@@ -10,6 +10,7 @@ import {
   SPACE_PAGE_SIZE_OPTIONS,
   SPACE_SORT_BY_OPTIONS,
 } from '../constants/spaces'
+import { getPlaceCoverSrc, resolvePlaceCoverSrc } from '../utils/place-image'
 import { SpaceCard } from '../components/SpaceCard'
 import { AppSidebar } from '../components/AppSidebar'
 import { AppHeader } from '../components/AppHeader'
@@ -203,6 +204,13 @@ export function PlaceSpaces() {
                 <SpaceCard
                   key={space.id}
                   space={space}
+                  placeCoverSrc={
+                    place
+                      ? resolvePlaceCoverSrc(place)
+                      : placeId
+                        ? getPlaceCoverSrc(placeId)
+                        : undefined
+                  }
                   timezone={place?.timezone}
                   onEdit={setSpaceToEdit}
                   onDelete={handleDeleteSpace}

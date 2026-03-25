@@ -1,9 +1,12 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { Space } from '../types/spaces.types'
 import { formatDateTimeRange } from '../utils/date'
 
 interface SpaceCardProps {
   space: Space
+  /** Parent place cover image (same asset as on the Places grid) */
+  placeCoverSrc?: string
   timezone?: string
   onEdit?: (space: Space) => void
   onDelete?: (space: Space) => void
@@ -12,34 +15,49 @@ interface SpaceCardProps {
 
 export function SpaceCard({
   space,
+  placeCoverSrc,
   timezone,
   onEdit,
   onDelete,
   isDeleting,
 }: SpaceCardProps) {
+  const [coverFailed, setCoverFailed] = useState(false)
   const hasReservations = space.reservations?.length > 0
   const canDelete = !hasReservations && onDelete
 
   return (
     <article data-cy="space-card" className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
+      {placeCoverSrc ? (
+        <div className="relative aspect-[4/3] bg-slate-100 shrink-0">
+          {!coverFailed ? (
+            <img
+              src={placeCoverSrc}
+              alt={`${space.name} — place photo`}
+              className="absolute inset-0 w-full h-full object-cover"
+              onError={() => setCoverFailed(true)}
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-slate-400">
+              <svg
+                className="w-12 h-12"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+              </svg>
+            </div>
+          )}
+        </div>
+      ) : null}
       <div className="p-5 flex flex-col flex-1 min-h-0">
-        <div className="flex items-start gap-3 mb-4 shrink-0">
-          <div className="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center shrink-0">
-            <svg
-              className="w-5 h-5 text-sky-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-              />
-            </svg>
-          </div>
-          <div className="min-w-0 flex-1">
+        <div className="mb-4 shrink-0">
+          <div className="min-w-0">
             <div className="flex items-start justify-between gap-2">
               <span className="inline-block px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600 text-xs font-medium mb-1.5">
                 {space.reference}
