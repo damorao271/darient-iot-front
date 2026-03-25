@@ -1,4 +1,6 @@
-# darient-iot-front
+# Daniel Morao Nishimura - Technical Assessment
+
+## darient-iot-front
 
 React + TypeScript + Tailwind CSS project built with Vite.
 
@@ -93,11 +95,11 @@ npx cypress run --spec "cypress/e2e/space-detail.cy.ts"
 
 Available spec files:
 
-| Spec file | What it tests |
-| --- | --- |
-| `cypress/e2e/browse-places.cy.ts` | Browsing the list of places |
-| `cypress/e2e/place-spaces.cy.ts` | Listing and managing spaces inside a place |
-| `cypress/e2e/space-detail.cy.ts` | Space detail view and reservations |
+| Spec file                         | What it tests                                  |
+| --------------------------------- | ---------------------------------------------- |
+| `cypress/e2e/browse-places.cy.ts` | Browsing the list of places                    |
+| `cypress/e2e/place-spaces.cy.ts`  | Listing and managing spaces inside a place     |
+| `cypress/e2e/space-detail.cy.ts`  | Space detail view and reservations             |
 | `cypress/e2e/iot-dashboard.cy.ts` | IoT dashboard (telemetry, alerts, device twin) |
 
 ### Open the interactive Cypress UI
